@@ -1,0 +1,655 @@
+<!--
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-->
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NHỊ THỨ - TNĐ LÂM ĐỒNG | Cổng Thông Tin Quản Trị Nội Bộ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+    <!-- ĐOẠN MÃ ẨN NỘI DUNG KHI XEM TRƯỚC (PREVIEW TRÊN WINDOWS) -->
+    <style>
+        body {
+            display: none !important;
+        }
+        /* Custom scrollbar cho Modal */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #0284c7;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #0369a1;
+        }
+    </style>
+    <script>
+        if (window.top === window.self) {
+            document.addEventListener("DOMContentLoaded", function () {
+                document.body.style.setProperty("display", "flex", "important");
+            });
+        }
+    </script>
+</head>
+<body class="font-sans leading-normal tracking-normal min-h-screen flex flex-col justify-between relative select-none bg-slate-900">
+
+    <!-- BACKGROUND NGÀNH TRUYỀN TẢI ĐIỆN VỚI LỚP PHỦ MỜ XANH -->
+    <div class="fixed inset-0 z-[-1] pointer-events-none">
+        <div class="absolute inset-0 bg-cover bg-center bg-no-repeat bg-fixed filter brightness-90"
+             style="background-image: url('https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&w=1920&q=80');">
+        </div>
+        <div class="absolute inset-0 bg-emerald-950/85 backdrop-blur-[2px]"></div>
+    </div>
+
+    <!-- MÀN HÌNH ĐĂNG NHẬP -->
+    <div id="login-overlay" class="fixed inset-0 bg-emerald-950/95 backdrop-blur-md z-[100] flex items-center justify-center p-4 transition-opacity duration-300">
+        <div class="bg-white/95 rounded-xl shadow-2xl p-6 max-w-sm w-full border-t-8 border-red-600 text-center transform transition-all scale-100 backdrop-blur-md">
+            <img src="https://lh3.googleusercontent.com/d/1lUwGkeubCnzSEhyc7y6uOSSQZmwvL1eN" alt="Logo" class="h-16 w-16 mx-auto mb-3 border-2 border-red-600 rounded-lg p-1 object-contain shadow-sm bg-white">
+            <h2 class="text-lg font-bold text-red-600 uppercase mb-0.5">NHỊ THỨ - TNĐ LÂM ĐỒNG</h2>
+            <p class="text-xs text-blue-900 font-semibold mb-4">Xác thực quyền truy cập hệ thống</p>
+            
+            <form onsubmit="checkLogin(event)" class="space-y-3">
+                <div class="relative">
+                    <input type="text" id="access-user" placeholder="Tên tài khoản (User)..." required autocomplete="off"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:outline-none text-center text-sm transition bg-white/90">
+                </div>
+                <div class="relative">
+                    <input type="password" id="access-pass" placeholder="Mật khẩu (Pass)..." required autocomplete="off"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:outline-none text-center text-sm transition bg-white/90">
+                </div>
+                <button type="submit" class="w-full bg-blue-900 hover:bg-blue-800 text-amber-100 font-bold py-2 rounded-lg text-sm shadow transition duration-200 flex items-center justify-center gap-2">
+                    <i class="fas fa-sign-in-alt"></i> ĐĂNG NHẬP
+                </button>
+                <p id="login-error" class="text-red-600 text-xs font-semibold hidden animate-bounce mt-2">Tài khoản hoặc mật khẩu không đúng!</p>
+            </form>
+        </div>
+    </div>
+
+    <div>
+        <!-- HEADER -->
+        <header class="relative bg-slate-900/80 text-gray-800 shadow-lg border-b-4 border-red-600 sticky top-0 z-40 overflow-hidden py-3 backdrop-blur-md">
+            <div class="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-3 relative z-10 w-full">
+                <div class="flex items-center space-x-3 cursor-pointer text-center md:text-left transition transform hover:scale-[1.01]" onclick="showMainPage()">
+                    <img src="https://lh3.googleusercontent.com/d/1lUwGkeubCnzSEhyc7y6uOSSQZmwvL1eN" 
+                         alt="Logo NHỊ THỨ - TNĐ LÂM ĐỒNG" 
+                         class="h-12 w-12 md:h-14 md:w-14 rounded-xl border-2 border-red-600 object-contain p-1 bg-white shadow-lg flex-shrink-0">
+                    
+                    <div>
+                        <h1 class="text-lg sm:text-2xl font-black uppercase text-amber-400 tracking-wider drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
+                            NHỊ THỨ - TNĐ LÂM ĐỒNG
+                        </h1>
+                        <p class="text-xs text-white font-extrabold tracking-wide mt-0.5 drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">
+                            Hệ thống Quản lý & Báo cáo Nội bộ
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="flex items-center space-x-3 flex-shrink-0">
+                    <!-- THÔNG TIN USER KHI ĐĂNG NHẬP -->
+                    <div id="user-info-badge" class="hidden text-right text-xs bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-lg border border-white/20 shadow-sm text-white">
+                        <p class="font-bold text-amber-300" id="current-user-name"></p>
+                        <p class="text-[10px] text-gray-300" id="current-user-role"></p>
+                    </div>
+                    <button onclick="logout()" id="logout-btn" class="hidden bg-red-700 hover:bg-red-800 text-white font-bold px-2.5 py-1.5 rounded-lg text-xs shadow-md transition-all duration-200 border border-red-500 whitespace-nowrap">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+
+                    <button onclick="showAboutPage()" class="bg-blue-900/90 hover:bg-blue-800 text-amber-100 font-bold px-3 py-1.5 rounded-lg text-xs shadow-md transition-all duration-200 flex items-center border border-blue-500 whitespace-nowrap backdrop-blur-sm">
+                        <i class="fas fa-info-circle mr-1.5 text-xs"></i> GIỚI THIỆU
+                    </button>
+                    <div class="hidden xl:block text-right text-xs whitespace-nowrap">
+                        <p id="current-date" class="font-bold text-white bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-lg border border-white/20 shadow-sm"></p>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- TRANG CHỦ -->
+        <main id="main-content" class="container mx-auto px-4 py-4">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 border-b-2 border-amber-400/80 pb-2 gap-2">
+                <h2 class="text-base font-bold text-amber-400 flex items-center tracking-wide shadow-text">
+                    <i class="fas fa-th-large mr-2 text-amber-400"></i> DANH MỤC CÔNG VIỆC
+                </h2>
+                <div class="relative w-full md:w-60">
+                    <input type="text" id="search-input" onkeyup="filterShortcuts()" placeholder="Tìm nhanh công việc..." 
+                           class="w-full pl-8 pr-3 py-1.5 rounded-lg border border-emerald-400/50 focus:outline-none focus:ring-2 focus:ring-amber-400 text-xs bg-white/90 text-gray-800 shadow-sm backdrop-blur-sm">
+                    <i class="fas fa-search absolute left-2.5 top-2.5 text-gray-500 text-xs"></i>
+                </div>
+            </div>
+
+            <!-- DANH MỤC CÁC MỤC ĐÃ ĐƯỢC SẮP XẾP THEO ĐÚNG THỨ TỰ (1 ĐẾN 9) -->
+            <div id="shortcut-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                
+                <!-- THẺ 1: PHÂN CÔNG CÔNG TÁC -->
+                <div onclick="openWorkScheduleModal()" 
+                     class="shortcut-card cursor-pointer bg-teal-50/95 hover:bg-teal-100 rounded-lg shadow-md hover:shadow-xl transition-all duration-200 p-3 flex items-center space-x-3 border-l-4 border-teal-600 backdrop-blur-md">
+                    <div class="p-2.5 bg-teal-700 text-white rounded-md shadow-sm flex-shrink-0"><i class="fas fa-calendar-alt text-xl"></i></div>
+                    <div class="flex-1 min-w-0">
+                        <h3 class="shortcut-title font-bold text-gray-900 text-sm leading-tight truncate">PHÂN CÔNG CÔNG TÁC</h3>
+                        <p class="text-[11px] text-gray-700 truncate mt-0.5">Xem lịch làm việc & phân công nhiệm vụ tuần</p>
+                        <span class="inline-block mt-1 text-[10px] font-semibold text-white bg-teal-700 px-1.5 py-0.5 rounded"><i class="fas fa-calendar-week mr-1"></i> Trực tiếp từ Google Sheet</span>
+                    </div>
+                </div>
+
+                <!-- THẺ 2: NHẬT KÝ CÔNG TÁC -->
+                <a href="https://docs.google.com/spreadsheets/d/1rQwink8qb67Y_RXsZSTiQnlp2j4sr9kMCMq1O7ACL0A/edit?gid=159038832#gid=159038832" target="_blank" rel="noopener noreferrer" 
+                   class="shortcut-card bg-indigo-50/95 hover:bg-indigo-100 rounded-lg shadow-md hover:shadow-xl transition-all duration-200 p-3 flex items-center space-x-3 border-l-4 border-indigo-600 backdrop-blur-md">
+                    <div class="p-2.5 bg-indigo-700 text-white rounded-md shadow-sm flex-shrink-0"><i class="fas fa-book text-xl"></i></div>
+                    <div class="flex-1 min-w-0">
+                        <h3 class="shortcut-title font-bold text-gray-900 text-sm leading-tight truncate">NHẬT KÝ CÔNG TÁC</h3>
+                        <p class="text-[11px] text-gray-700 truncate mt-0.5">Ghi chép công tác hàng ngày</p>
+                        <span class="inline-block mt-1 text-[10px] font-semibold text-indigo-900 bg-indigo-200 px-1.5 py-0.5 rounded border border-indigo-300"><i class="fas fa-table mr-1"></i> Google Sheet</span>
+                    </div>
+                </a>
+
+                <!-- THẺ 3: SỐ PHƯƠNG ÁN -->
+                <a href="https://docs.google.com/spreadsheets/d/1b1Oc40Bm4keYptWUfH9cqQet1HYXyHGceVWVvyfCx9g/edit?gid=1088292246#gid=1088292246" target="_blank" rel="noopener noreferrer" 
+                   class="shortcut-card bg-purple-50/95 hover:bg-purple-100 rounded-lg shadow-md hover:shadow-xl transition-all duration-200 p-3 flex items-center space-x-3 border-l-4 border-purple-600 backdrop-blur-md">
+                    <div class="p-2.5 bg-purple-700 text-white rounded-md shadow-sm flex-shrink-0"><i class="fas fa-project-diagram text-xl"></i></div>
+                    <div class="flex-1 min-w-0">
+                        <h3 class="shortcut-title font-bold text-gray-900 text-sm leading-tight truncate">SỐ PHƯƠNG ÁN</h3>
+                        <p class="text-[11px] text-gray-700 truncate mt-0.5">Lấy và cấp số phương án TNĐK</p>
+                        <span class="inline-block mt-1 text-[10px] font-semibold text-purple-900 bg-purple-200 px-1.5 py-0.5 rounded border border-purple-300"><i class="fas fa-table mr-1"></i> Google Sheet</span>
+                    </div>
+                </a>
+
+                <!-- THẺ 4: HẠNG MỤC TNĐK -->
+                <a href="https://docs.google.com/spreadsheets/d/1R82ZJUFMyAkhP4g8RZguC-SjtzliUfj6dXeBQ7st0GQ/edit?gid=607880115#gid=607880115" target="_blank" rel="noopener noreferrer" 
+                   class="shortcut-card bg-sky-50/95 hover:bg-sky-100 rounded-lg shadow-md hover:shadow-xl transition-all duration-200 p-3 flex items-center space-x-3 border-l-4 border-sky-600 backdrop-blur-md">
+                    <div class="p-2.5 bg-sky-700 text-white rounded-md shadow-sm flex-shrink-0"><i class="fas fa-vial text-xl"></i></div>
+                    <div class="flex-1 min-w-0">
+                        <h3 class="shortcut-title font-bold text-gray-900 text-sm leading-tight truncate">HẠNG MỤC TNĐK</h3>
+                        <p class="text-[11px] text-gray-700 truncate mt-0.5">Hạng mục thí nghiệm theo QĐ</p>
+                        <span class="inline-block mt-1 text-[10px] font-semibold text-sky-900 bg-sky-200 px-1.5 py-0.5 rounded border border-sky-300"><i class="fas fa-table mr-1"></i> Google Sheet</span>
+                    </div>
+                </a>
+
+                <!-- THẺ 5: THỐNG KÊ RƠ LE-NHỊ THỨ -->
+                <a href="https://docs.google.com/spreadsheets/d/1OZhAnzAyHWT9dQWKCmHtgXYQQV08li8VVwFwuDDyWIM/edit?gid=930904072#gid=930904072" target="_blank" rel="noopener noreferrer" 
+                   class="shortcut-card bg-amber-50/95 hover:bg-amber-100 rounded-lg shadow-md hover:shadow-xl transition-all duration-200 p-3 flex items-center space-x-3 border-l-4 border-amber-600 backdrop-blur-md">
+                    <div class="p-2.5 bg-amber-700 text-white rounded-md shadow-sm flex-shrink-0"><i class="fas fa-file-invoice text-xl"></i></div>
+                    <div class="flex-1 min-w-0">
+                        <h3 class="shortcut-title font-bold text-gray-900 text-sm leading-tight truncate">THỐNG KÊ RƠ LE-NHỊ THỨ</h3>
+                        <p class="text-[11px] text-gray-700 truncate mt-0.5">Thống kê rơ le, nhị thứ các trạm thuộc phạm vi TNLĐ</p>
+                        <span class="inline-block mt-1 text-[10px] font-semibold text-amber-900 bg-amber-200 px-1.5 py-0.5 rounded border border-amber-300"><i class="fas fa-table mr-1"></i> Google Sheet</span>
+                    </div>
+                </a>
+
+                <!-- THẺ 6: THỐNG KÊ BBTN -->
+                <a href="https://docs.google.com/spreadsheets/d/12pzs5R8ZQgXPY52RYoHUsTy6_XrpFYHNimuXQrAkOSc/edit?gid=0#gid=0" target="_blank" rel="noopener noreferrer" 
+                   class="shortcut-card bg-cyan-50/95 hover:bg-cyan-100 rounded-lg shadow-md hover:shadow-xl transition-all duration-200 p-3 flex items-center space-x-3 border-l-4 border-cyan-600 backdrop-blur-md">
+                    <div class="p-2.5 bg-cyan-700 text-white rounded-md shadow-sm flex-shrink-0"><i class="fas fa-chart-bar text-xl"></i></div>
+                    <div class="flex-1 min-w-0">
+                        <h3 class="shortcut-title font-bold text-gray-900 text-sm leading-tight truncate">THỐNG KÊ BBTN</h3>
+                        <p class="text-[11px] text-gray-700 truncate mt-0.5">Quản lý & thống kê số lượng biên bản thí nghiệm</p>
+                        <span class="inline-block mt-1 text-[10px] font-semibold text-cyan-900 bg-cyan-200 px-1.5 py-0.5 rounded border border-cyan-300"><i class="fas fa-table mr-1"></i> Google Sheet</span>
+                    </div>
+                </a>
+
+                <!-- THẺ 7: THỐNG KÊ VẬT TƯ -->
+                <a href="https://docs.google.com/spreadsheets/d/1Hbp5HKKXtvvnQyAMqoAO1wm8js8R477ODXF5zx5pHzw/edit?gid=185456539#gid=185456539" target="_blank" rel="noopener noreferrer" 
+                   class="shortcut-card bg-orange-50/95 hover:bg-orange-100 rounded-lg shadow-md hover:shadow-xl transition-all duration-200 p-3 flex items-center space-x-3 border-l-4 border-orange-600 backdrop-blur-md">
+                    <div class="p-2.5 bg-orange-600 text-white rounded-md shadow-sm flex-shrink-0"><i class="fas fa-boxes text-xl"></i></div>
+                    <div class="flex-1 min-w-0">
+                        <h3 class="shortcut-title font-bold text-gray-900 text-sm leading-tight truncate">THỐNG KÊ VẬT TƯ</h3>
+                        <p class="text-[11px] text-gray-700 truncate mt-0.5">Kiểm kê, quản lý xuất nhập tồn kho vật tư</p>
+                        <span class="inline-block mt-1 text-[10px] font-semibold text-orange-900 bg-orange-200 px-1.5 py-0.5 rounded border border-orange-300"><i class="fas fa-table mr-1"></i> Google Sheet</span>
+                    </div>
+                </a>
+
+                <!-- THẺ 8: XIN TRANG CẤP -->
+                <div onclick="openProposalModal('XIN_TRANG_CAP', 'XIN TRANG CẤP', 'Đăng ký trang thiết bị & vật tư văn phòng')" 
+                     class="shortcut-card cursor-pointer bg-emerald-50/95 hover:bg-emerald-100 rounded-lg shadow-md hover:shadow-xl transition-all duration-200 p-3 flex items-center space-x-3 border-l-4 border-emerald-600 backdrop-blur-md">
+                    <div class="p-2.5 bg-emerald-700 text-white rounded-md shadow-sm flex-shrink-0"><i class="fas fa-hand-holding text-xl"></i></div>
+                    <div class="flex-1 min-w-0">
+                        <h3 class="shortcut-title font-bold text-gray-900 text-sm leading-tight truncate">XIN TRANG CẤP</h3>
+                        <p class="text-[11px] text-gray-700 truncate mt-0.5">Đăng ký nhu cầu vật tư, thiết bị làm việc</p>
+                        <span class="inline-block mt-1 text-[10px] font-semibold text-white bg-emerald-700 px-1.5 py-0.5 rounded"><i class="fas fa-sync-alt mr-1"></i> Đồng bộ Google Sheet</span>
+                    </div>
+                </div>
+
+                <!-- THẺ 9: Ý TƯỞNG SÁNG KIẾN -->
+                <div onclick="openProposalModal('Y_TUONG_SANG_KIEN', 'Ý TƯỞNG SÁNG KIẾN', 'Đóng góp ý tưởng cải tiến kỹ thuật & quản lý')" 
+                     class="shortcut-card cursor-pointer bg-rose-50/95 hover:bg-rose-100 rounded-lg shadow-md hover:shadow-xl transition-all duration-200 p-3 flex items-center space-x-3 border-l-4 border-rose-600 backdrop-blur-md">
+                    <div class="p-2.5 bg-rose-600 text-white rounded-md shadow-sm flex-shrink-0"><i class="fas fa-lightbulb text-xl"></i></div>
+                    <div class="flex-1 min-w-0">
+                        <h3 class="shortcut-title font-bold text-gray-900 text-sm leading-tight truncate">Ý TƯỞNG SÁNG KIẾN</h3>
+                        <p class="text-[11px] text-gray-700 truncate mt-0.5">Đóng góp ý tưởng cải tiến kỹ thuật & quản lý</p>
+                        <span class="inline-block mt-1 text-[10px] font-semibold text-white bg-rose-600 px-1.5 py-0.5 rounded"><i class="fas fa-sync-alt mr-1"></i> Đồng bộ Google Sheet</span>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+
+        <!-- TRANG GIỚI THIỆU -->
+        <main id="about-content" class="container mx-auto px-4 py-6 hidden">
+            <div class="max-w-4xl mx-auto bg-amber-50/95 rounded-lg shadow-xl border-l-8 border-blue-900 p-5 backdrop-blur-md">
+                <div class="flex justify-between items-center border-b-2 border-blue-900 pb-2.5 mb-3">
+                    <h2 class="text-lg font-bold text-blue-900 flex items-center"><i class="fas fa-users text-blue-900 mr-2"></i> SƠ ĐỒ TỔ CHỨC NHÂN SỰ</h2>
+                    <button onclick="showMainPage()" class="bg-red-600 hover:bg-red-700 text-white font-bold px-3 py-1 rounded-lg text-xs shadow flex items-center transition"><i class="fas fa-home mr-1"></i> Quay về trang chủ</button>
+                </div>
+                <div class="space-y-4 text-blue-900 text-xs leading-relaxed">
+                    <div class="bg-white/90 p-3.5 rounded-lg border border-amber-200 shadow-sm">
+                        <h3 class="font-bold text-sm text-red-600 mb-1 flex items-center"><i class="fas fa-sitemap mr-1.5"></i> Về Nhị thứ Lâm Đồng</h3>
+                        <p class="text-gray-800">Nhị thứ Lâm Đồng thuộc <strong>Tổ Thí nghiệm điện Lâm Đồng</strong>.</p>
+                        <p class="text-gray-800 mt-1"><strong>Nhiệm vụ:</strong> Thí nghiệm định kỳ, thí nghiệm hiệu chỉnh, đào tạo về rơ le nhị thứ.</p>
+                    </div>
+
+                    <!-- HIỂN THỊ SƠ ĐỒ CẤP BẬC TƯƠNG TỰ HÌNH ẢNH -->
+                    <div class="bg-white/90 p-4 rounded-lg border border-amber-200 shadow-sm">
+                        <h3 class="font-bold text-sm text-blue-900 mb-4 flex items-center justify-center text-center">
+                            <i class="fas fa-diagram-project mr-2"></i> SƠ ĐỒ TỔ CHỨC NHÂN SỰ
+                        </h3>
+
+                        <!-- TỔ TRƯỞNG -->
+                        <div class="flex justify-center mb-3">
+                            <div class="bg-blue-900 text-white px-5 py-2 rounded-full font-bold shadow-md text-center flex items-center gap-2 border-2 border-blue-700">
+                                <i class="fas fa-user-tier text-amber-400"></i> Tổ trưởng - Nguyễn Hữu Kính
+                            </div>
+                        </div>
+
+                        <!-- ĐƯỜNG NỐI DỌC CẤP 1 -->
+                        <div class="w-0.5 h-4 bg-blue-900 mx-auto"></div>
+                        <div class="w-1/2 border-t-2 border-blue-900 mx-auto"></div>
+                        <div class="flex justify-between w-1/2 mx-auto h-4">
+                            <div class="w-0.5 h-full bg-blue-900"></div>
+                            <div class="w-0.5 h-full bg-blue-900"></div>
+                        </div>
+
+                        <!-- TỔ PHÓ -->
+                        <div class="grid grid-cols-2 gap-4 mb-4">
+                            <div class="flex justify-center">
+                                <div class="bg-blue-800 text-white px-3 py-1.5 rounded-full font-bold shadow text-center flex items-center gap-1.5 text-[11px]">
+                                    <i class="fas fa-user-cog text-amber-300"></i> Tổ phó 1 - Hoàng Trần Quản Trọng 
+                                </div>
+                            </div>
+                            <div class="flex justify-center">
+                                <div class="bg-blue-800 text-white px-3 py-1.5 rounded-full font-bold shadow text-center flex items-center gap-1.5 text-[11px]">
+                                    <i class="fas fa-user-cog text-amber-300"></i> Tổ phó 2 - Ngô Văn Quang
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ĐƯỜNG NỐI XUỐNG KHU VỰC NHÂN VIÊN -->
+                        <div class="w-0.5 h-5 bg-blue-900 mx-auto mb-2"></div>
+
+                        <!-- KHU VỰC NHÂN VIÊN THÍ NGHIỆM NHỊ THỨ -->
+                        <div class="border-2 border-emerald-400/80 bg-emerald-50/50 p-3 rounded-2xl relative">
+                            <span class="absolute -top-2.5 left-1/2 -translate-x-1/2 bg-white px-3 py-0.5 font-bold text-[11px] text-emerald-800 border border-emerald-300 rounded-full shadow-sm">
+                                NHÂN VIÊN THÍ NGHIỆM NHỊ THỨ
+                            </span>
+
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-2.5 mt-2">
+                                <div class="bg-emerald-100/90 border border-emerald-300 p-2 rounded-xl text-center font-medium text-emerald-950 flex items-center justify-center gap-2 shadow-sm">
+                                    <i class="fas fa-user text-emerald-700"></i> Võ Ngọc Sơn - Kỹ sư điện
+                                </div>
+                                <div class="bg-emerald-100/90 border border-emerald-300 p-2 rounded-xl text-center font-medium text-emerald-950 flex items-center justify-center gap-2 shadow-sm">
+                                    <i class="fas fa-user text-emerald-700"></i> Võ Văn Sỹ - Công nhân
+                                </div>
+                                <div class="bg-emerald-100/90 border border-emerald-300 p-2 rounded-xl text-center font-medium text-emerald-950 flex items-center justify-center gap-2 shadow-sm">
+                                    <i class="fas fa-user text-emerald-700"></i> Lưu Đức Minh - Kỹ sư điện
+                                </div>
+                                <div class="bg-emerald-100/90 border border-emerald-300 p-2 rounded-xl text-center font-medium text-emerald-950 flex items-center justify-center gap-2 shadow-sm">
+                                    <i class="fas fa-user text-emerald-700"></i> Nguyễn Xuân Khánh - Công nhân
+                                </div>
+                                <div class="bg-emerald-100/90 border border-emerald-300 p-2 rounded-xl text-center font-medium text-emerald-950 flex items-center justify-center gap-2 shadow-sm">
+                                    <i class="fas fa-user text-emerald-700"></i> Đoàn Hoàng Quang Định - Công nhân
+ 				</div>
+				<div class="bg-emerald-100/90 border border-emerald-300 p-2 rounded-xl text-center font-medium text-emerald-950 flex items-center justify-center gap-2 shadow-sm">
+                                    <i class="fas fa-user text-emerald-700"></i> Nguyễn Văn A - Đại học
+                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- MODAL POPUP - XIN TRANG CẤP & SÁNG KIẾN -->
+    <div id="proposal-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex justify-center items-center p-2 sm:p-4 hidden transition-all duration-300">
+        <div class="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[95vh] flex flex-col overflow-hidden border-t-8 border-blue-900 transform transition-all scale-100">
+            <div class="bg-emerald-50 p-3 sm:p-4 border-b border-gray-200 flex justify-between items-center">
+                <div>
+                    <h3 id="modal-title" class="text-sm sm:text-base font-bold text-blue-900 uppercase"></h3>
+                    <p id="modal-subtitle" class="text-[11px] sm:text-xs text-gray-600 mt-0.5"></p>
+                </div>
+                <button onclick="closeProposalModal()" class="text-gray-400 hover:text-red-600 text-2xl font-bold w-8 h-8 rounded-full flex items-center justify-center transition">&times;</button>
+            </div>
+
+            <div class="p-2 sm:p-4 overflow-y-auto flex-1 relative">
+                <div id="loading-spinner" class="hidden absolute inset-0 bg-white/80 z-10 flex items-center justify-center">
+                    <div class="text-center text-blue-900 font-semibold text-xs">
+                        <i class="fas fa-spinner fa-spin text-2xl mb-1.5 text-blue-900"></i>
+                        <p>Đang tải dữ liệu từ Google Sheet...</p>
+                    </div>
+                </div>
+
+                <div id="proposal-container" class="space-y-3"></div>
+
+                <div class="mt-3 flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-2">
+                    <button type="button" onclick="addProposalRow()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-xs font-semibold shadow flex items-center justify-center transition">
+                        <i class="fas fa-plus mr-1"></i> Thêm dòng mới
+                    </button>
+                    <span class="text-[10px] text-gray-500 italic text-center sm:text-right">* Dữ liệu được đồng bộ trực tiếp với Google Sheet chung.</span>
+                </div>
+            </div>
+
+            <div class="bg-gray-50 p-2.5 border-t border-gray-200 flex justify-end space-x-2">
+                <button type="button" onclick="closeProposalModal()" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-600 bg-gray-200 hover:bg-gray-300 transition">Đóng</button>
+                <button type="button" id="save-btn" onclick="saveProposalData()" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-white bg-blue-900 hover:bg-blue-800 shadow flex items-center transition">
+                    <i class="fas fa-save mr-1"></i> Lưu thông tin
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL POPUP - PHÂN CÔNG CÔNG TÁC -->
+    <div id="schedule-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex justify-center items-center p-2 sm:p-4 hidden transition-all duration-300">
+        <div class="bg-white rounded-xl shadow-2xl max-w-6xl w-full h-[90vh] flex flex-col overflow-hidden border-t-8 border-blue-900 transform transition-all scale-100">
+            <div class="bg-emerald-50 p-3 sm:p-4 border-b border-gray-200 flex justify-between items-center flex-shrink-0">
+                <div>
+                    <h3 class="text-sm sm:text-base font-bold text-blue-900 uppercase"><i class="fas fa-calendar-week mr-2"></i>PHÂN CÔNG CÔNG TÁC</h3>
+                    <p class="text-[11px] sm:text-xs text-gray-600 mt-0.5">Dữ liệu phân công trực tiếp từ Google Sheet (Cập nhật thời gian thực)</p>
+                </div>
+                <button onclick="closeWorkScheduleModal()" class="text-gray-400 hover:text-red-600 text-2xl font-bold w-8 h-8 rounded-full flex items-center justify-center transition">&times;</button>
+            </div>
+
+            <div class="flex-1 w-full h-full bg-gray-100 relative">
+                <iframe id="schedule-iframe"
+                        src="" 
+                        class="w-full h-full border-0" 
+                        allowfullscreen="true">
+                </iframe>
+            </div>
+
+            <div class="bg-gray-50 p-2.5 border-t border-gray-200 flex justify-between items-center flex-shrink-0">
+                <span class="text-[10px] text-gray-500 italic">* Dữ liệu hiển thị tự động cập nhật từ Google Sheet của bạn.</span>
+                <div class="flex space-x-2">
+                    <button type="button" onclick="closeWorkScheduleModal()" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-600 bg-gray-200 hover:bg-gray-300 transition">Đóng</button>
+                    <!-- NÚT MỞ SỬA BẢNG GOOGLE SHEET PHÂN CÔNG -->
+                    <a href="https://docs.google.com/spreadsheets/d/1Qwc_50zeZZ4QdeWat_fu4cFTkDCg8CznXmxcs-llzVQ/edit?gid=0#gid=0" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-white bg-blue-900 hover:bg-blue-800 shadow flex items-center transition">
+                        <i class="fas fa-external-link-alt mr-1"></i> Chỉnh sửa Sheet
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-900/90 text-white py-2.5 mt-4 border-t-2 border-amber-400 backdrop-blur-md">
+        <div class="container mx-auto px-4 text-center text-[11px]">
+            <p>Bản quyền thuộc về © NHỊ THỨ - TNĐ LÂM ĐỒNG - 68 TRẦN HƯNG ĐẠO - PHƯỜNG B'LAO - LÂM ĐỒNG</p>
+        </div>
+    </footer>
+
+    <!-- SCRIPT TÍNH NĂNG -->
+    <script>
+        // CẤU HÌNH DANH SÁCH TÀI KHOẢN VÀ MẬT KHẨU CẬP NHẬT CHÍNH XÁC THEO HÌNH CỦA BẠN
+        const USERS = [
+            { username: "NguyenHuuKinh", pass: "kinh123", name: "Nguyễn Hữu Kính", role: "Tổ trưởng" },
+            { username: "HoangTranQuanTrong", pass: "trong123", name: "Hoàng Trần Quản Trọng", role: "Tổ phó 1" },
+            { username: "NgoVanQuang", pass: "quang@", name: "Ngô Văn Quang", role: "Tổ phó 2" },
+            { username: "VoNgocSon", pass: "son123", name: "Võ Ngọc Sơn", role: "Kỹ sư điện" },
+            { username: "VoVanSy", pass: "sy123", name: "Võ Văn Sỹ", role: "Công nhân" },
+            { username: "LuuDucMinh", pass: "minh123", name: "Lưu Đức Minh", role: "Kỹ sư điện" },
+            { username: "NguyenXuanKhanh", pass: "khanh123", name: "Nguyễn Xuân Khánh", role: "Công nhân" },
+            { username: "DoanHoangQuangDinh", pass: "dinh123", name: "Đoàn Hoàng Quang Định", role: "Công nhân" },
+	    { username: "khach", pass: "khach123", name: "Khách", role: "guest" }
+        ];
+
+        let currentUser = null;
+
+        function checkLogin(e) {
+            e.preventDefault();
+            const uInput = document.getElementById('access-user').value.trim().toLowerCase();
+            const pInput = document.getElementById('access-pass').value.trim();
+            const errorMsg = document.getElementById('login-error');
+
+            const foundUser = USERS.find(u => u.username.toLowerCase() === uInput && u.pass === pInput);
+
+            if (foundUser) {
+                currentUser = foundUser;
+                document.getElementById('login-overlay').classList.add('hidden');
+                errorMsg.classList.add('hidden');
+                
+                // Hiển thị thông tin User đăng nhập trên Header
+                document.getElementById('current-user-name').innerText = currentUser.name;
+                document.getElementById('current-user-role').innerText = currentUser.role;
+                document.getElementById('user-info-badge').classList.remove('hidden');
+                document.getElementById('logout-btn').classList.remove('hidden');
+            } else {
+                errorMsg.classList.remove('hidden');
+                document.getElementById('access-pass').value = '';
+                document.getElementById('access-pass').focus();
+            }
+        }
+
+        function logout() {
+            currentUser = null;
+            document.getElementById('access-user').value = '';
+            document.getElementById('access-pass').value = '';
+            document.getElementById('user-info-badge').classList.add('hidden');
+            document.getElementById('logout-btn').classList.add('hidden');
+            document.getElementById('login-overlay').classList.remove('hidden');
+        }
+
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzWB8B2WjJRV9nzxNWp-1M6BWgcCbyjZJj0a2GH_gVGLBXRfXiCItQJX5h8q-ffVOz_/exec"; 
+
+        // LINK XUẤT BẢN THỰC TẾ CỦA BẠN:
+        const PUBLISHED_SHEET_BASE_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQtuTMqg0yNxiO5dol9jicC_m5KgxsfTzzkoI8At43qUilcmEf6LMpKLWK0wysoE8Lgp7dzvJ1Y-VKO/pubhtml";
+
+        let currentSheetName = "";
+
+        const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('current-date').innerText = new Date().toLocaleDateString('vi-VN', dateOptions);
+
+        function showAboutPage() {
+            document.getElementById('main-content').classList.add('hidden');
+            document.getElementById('about-content').classList.remove('hidden');
+        }
+
+        function showMainPage() {
+            document.getElementById('about-content').classList.add('hidden');
+            document.getElementById('main-content').classList.remove('hidden');
+        }
+
+        function filterShortcuts() {
+            const input = document.getElementById('search-input').value.toLowerCase().trim();
+            const cards = document.getElementsByClassName('shortcut-card');
+            for (let i = 0; i < cards.length; i++) {
+                const title = cards[i].querySelector('.shortcut-title').innerText.toLowerCase();
+                const desc = cards[i].querySelector('p').innerText.toLowerCase();
+                cards[i].style.display = (title.includes(input) || desc.includes(input)) ? "flex" : "none";
+            }
+        }
+
+        function openWorkScheduleModal() {
+            const iframe = document.getElementById('schedule-iframe');
+            let targetUrl = PUBLISHED_SHEET_BASE_URL;
+            
+            if (targetUrl.includes('?')) {
+                targetUrl += "&widget=true&headers=false&t=" + new Date().getTime();
+            } else {
+                targetUrl += "?widget=true&headers=false&t=" + new Date().getTime();
+            }
+
+            iframe.src = targetUrl;
+            document.getElementById('schedule-modal').classList.remove('hidden');
+        }
+
+        function closeWorkScheduleModal() {
+            document.getElementById('schedule-modal').classList.add('hidden');
+        }
+
+        async function openProposalModal(sheetName, title, subtitle) {
+            currentSheetName = sheetName;
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-subtitle').innerText = subtitle;
+            
+            const container = document.getElementById('proposal-container');
+            container.innerHTML = '';
+            document.getElementById('proposal-modal').classList.remove('hidden');
+            document.getElementById('loading-spinner').classList.remove('hidden');
+
+            try {
+                const res = await fetch(`${WEB_APP_URL}?sheetName=${currentSheetName}&t=${new Date().getTime()}`);
+                const data = await res.json();
+                
+                if (Array.isArray(data) && data.length > 0) {
+                    data.forEach(item => addProposalRow(item.person, item.content));
+                } else {
+                    const defaultName = currentUser ? currentUser.name : "";
+                    addProposalRow(defaultName);
+                }
+            } catch (err) {
+                console.error("Lỗi khi tải dữ liệu: ", err);
+                const defaultName = currentUser ? currentUser.name : "";
+                addProposalRow(defaultName);
+            } finally {
+                document.getElementById('loading-spinner').classList.add('hidden');
+            }
+        }
+
+        function closeProposalModal() {
+            document.getElementById('proposal-modal').classList.add('hidden');
+        }
+
+        function addProposalRow(selectedPerson = "", contentValue = "") {
+            const container = document.getElementById('proposal-container');
+            const rowCount = container.children.length + 1;
+
+            if (!selectedPerson && currentUser) {
+                selectedPerson = currentUser.name;
+            }
+
+            let optionsHtml = '<option value="">-- Chọn nhân sự --</option>';
+            USERS.forEach(user => {
+                const isSelected = user.name === selectedPerson ? 'selected' : '';
+                optionsHtml += `<option value="${user.name}" ${isSelected}>${user.name}</option>`;
+            });
+
+            const div = document.createElement('div');
+            div.className = 'proposal-item bg-amber-50/70 border border-amber-200 rounded-lg p-2.5 shadow-sm relative space-y-2';
+            div.innerHTML = `
+                <div class="flex justify-between items-center border-b border-amber-200/60 pb-1.5">
+                    <span class="font-bold text-xs text-blue-900 bg-amber-200 px-2 py-0.5 rounded-md">Mục #${rowCount}</span>
+                    <button type="button" onclick="removeProposalRow(this)" class="text-red-500 hover:text-red-700 text-xs px-1.5 py-0.5 rounded hover:bg-red-50 font-semibold flex items-center transition">
+                        <i class="fas fa-trash-alt mr-1"></i> Xóa
+                    </button>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                    <div class="col-span-1">
+                        <label class="block text-[11px] font-semibold text-gray-700 mb-1">Người đề xuất</label>
+                        <select class="person-select w-full p-1.5 border border-gray-300 rounded text-xs bg-white focus:ring-1 focus:ring-blue-900 focus:outline-none">
+                            ${optionsHtml}
+                        </select>
+                    </div>
+                    <div class="col-span-1 sm:col-span-2">
+                        <label class="block text-[11px] font-semibold text-gray-700 mb-1">Nội dung chi tiết</label>
+                        <textarea class="content-text w-full p-1.5 border border-gray-300 rounded text-xs bg-white focus:ring-1 focus:ring-blue-900 focus:outline-none h-16 resize-y" placeholder="Nhập nội dung đề xuất...">${contentValue}</textarea>
+                    </div>
+                </div>
+            `;
+            container.appendChild(div);
+        }
+
+        function removeProposalRow(button) {
+            const row = button.closest('.proposal-item');
+            row.remove();
+            
+            const container = document.getElementById('proposal-container');
+            const rows = container.getElementsByClassName('proposal-item');
+            Array.from(rows).forEach((r, index) => {
+                const badge = r.querySelector('span');
+                if (badge) badge.innerText = `Mục #${index + 1}`;
+            });
+        }
+
+        async function saveProposalData() {
+            const container = document.getElementById('proposal-container');
+            const rows = container.getElementsByClassName('proposal-item');
+            const dataToSave = [];
+
+            for (let row of rows) {
+                const person = row.querySelector('.person-select').value;
+                const content = row.querySelector('.content-text').value.trim();
+
+                if (person || content) {
+                    dataToSave.push({ person, content });
+                }
+            }
+
+            const saveBtn = document.getElementById('save-btn');
+            saveBtn.disabled = true;
+            saveBtn.innerHTML = `<i class="fas fa-spinner fa-spin mr-1"></i> Đang lưu...`;
+
+            try {
+                const res = await fetch(WEB_APP_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        sheetName: currentSheetName,
+                        rows: dataToSave
+                    })
+                });
+                
+                const result = await res.json();
+                if (result.status === 'success') {
+                    alert('Lưu dữ liệu thành công!');
+                    closeProposalModal();
+                } else {
+                    alert('Lỗi khi lưu dữ liệu: ' + result.message);
+                }
+            } catch (err) {
+                console.error("Lỗi khi lưu dữ liệu: ", err);
+                alert('Có lỗi xảy ra khi kết nối tới máy chủ!');
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.innerHTML = `<i class="fas fa-save mr-1"></i> Lưu thông tin`;
+            }
+        }
+    </script>
+</body>
+</html>
